@@ -35,7 +35,7 @@ The Knockout Tournament Tracker must:
 - Continue until 1 team remains and declare the champion.
 - Provide clear prompts and robust error handling throughout.
 
-## 3. Data flow diagram (DFD) adn Sturcture Chart
+## 3. Data flow diagram (DFD) and Sturcture Chart
 
 [DFD and Structure Chart](https://www.figma.com/board/WNywN4KmVRiXUZ07huRDob/2025-11SWE-AT1?node-id=0-1&t=uBabRc9YETND8BG5-1)
 
