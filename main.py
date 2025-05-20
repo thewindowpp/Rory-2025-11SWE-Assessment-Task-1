@@ -14,6 +14,9 @@ def teams():
     global teamslist
     teamslist = []
 
+    global leaderboard
+    leaderboard = {}
+
     print("Please input at least 4 teams, type 'done' to finish")
     
     while True:
@@ -28,24 +31,20 @@ def teams():
             print("Please enter atleast 4 teams")
         else:
             teamslist.append(teamname)
+            
+            team_stats = {
+                "played": 0,
+                "won": 0,
+                "lost": 0,
+                "for": 0,
+                "against": 0
+            }
+
+            leaderboard[teamname] = team_stats
     print(f"Starting teams: {', '.join(teamslist)}")
-    
-def init_leaderboard():
-    global leaderboard
-    leaderboard = []
 
     global act_teams
-    act_teams = teamslist.copy()
-
-    for teamname in teamslist:
-        team_stats = {
-            "name": teamname,
-            "wins": 0,
-            "losses": 0,
-            "points": 0,
-            "Byes": 0
-        }
-        leaderboard.append(team_stats)
+    act_teama = teamslist.copy()
 
 
 def rounds():
@@ -53,8 +52,8 @@ def rounds():
     round_num = 1
 
     while True:
-        if len(act_teams) == 1:
-            pass #Complete!!!!!!! Winner stuff
+        if len(act_teams) == 1: #Winner
+            print(*act_teams)
 
         if len(act_teams) % 2 == 0:
             pass #Complete!!!!!!! No bye
@@ -69,6 +68,4 @@ print("Welcome to the knockout Tournament Tracker!")
 
 teams()
 
-init_leaderboard()
-    
-
+print(leaderboard)
