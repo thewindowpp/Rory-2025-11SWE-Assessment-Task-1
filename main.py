@@ -53,16 +53,22 @@ def rounds():
 
     while True:
         if len(act_teams) == 1: #Winner
-            print(*act_teams)
+            print(*act_teams, " has won!")
+            #TABLE TABLE TABLE TABLE TABLE TABLE TABLE TABLE 
+
+            break #Winner Winner
 
         if len(act_teams) % 2 == 0:
             pass #Complete!!!!!!! No bye
         elif len(act_teams) % 2 == 1:
-            
+            bye = random.sample(teamslist, 1)
+            print(f"{bye} has been chosen as a bye for this round")
             
             pass #COMPLETE!!!!! ASSIGN BYE
         else:
             print("Error occured, please contact creator")
+
+        round_num += 1
 
 print("Welcome to the knockout Tournament Tracker!")
 
