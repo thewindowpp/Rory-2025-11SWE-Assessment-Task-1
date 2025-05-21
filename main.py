@@ -37,9 +37,7 @@ def teams():
             team_stats = {
                 "played": 0,
                 "won": 0,
-                "lost": 0,
-                "for": 0,
-                "against": 0
+                "lost": 0
             }
 
             leaderboard[teamname] = team_stats
@@ -59,6 +57,29 @@ def round_print():
     counter = 1
     for pair in pairs:
         print(f"Pair {counter} is {act_teams[pair[0]]} versus {act_teams[pair[1]]}")
+        
+
+        while True:
+
+            try:
+                team1_score = int(input(f"What did {act_teams[pair[0]]} score? "))
+                team2_score = int(input(f"What did {act_teams[pair[1]]} score? "))
+            except:
+                print("Please input scores as intergers.")
+                team1_score = int(input(f"What did {act_teams[pair[0]]} score? "))
+                team2_score = int(input(f"What did {act_teams[pair[1]]} score? "))
+
+            if team1_score > team2_score:
+                print(f"{act_teams[pair[0]]} won the round")
+                #INPUT REMOVE
+                break
+            elif team2_score > team1_score:
+                print(f"{act_teams[pair[1]]} won the round")
+                #INPUT REMOVE
+                break
+            else:
+                print("Draws are not allowed, please re-enter scores")
+
         counter +=1
 
 def rounds():
