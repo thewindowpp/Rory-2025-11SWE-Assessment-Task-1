@@ -1,8 +1,7 @@
 #imports
 import os
 import random
-
-
+import tabulate
 
 
 def clear_console():
@@ -47,14 +46,18 @@ def teams():
     act_teams = teams_list.copy()
 
 pairs = []
-seen_teams = []
+teams_with_byes = set()  # Track teams that have received a bye
 
 
-def teamrandom(): #Keeps matches easy easy
-    return random.randint(0, len(act_teams) - 1)
-
-
-
+def print_leaderboard():
+    # Display leaderboard using tabulate, sorted by wins descending
+    data = []
+    for team in teams_list:
+        stats = leaderboard[team]
+        data.append([team, stats["played"], stats["won"], stats["lost"]])
+    # Sort by wins (index 2) descending
+    data.sort(key=lambda x: x[2], reverse=True)
+    print(tabulate.tabulate(data, headers=["Team", "Played", "Won", "Lost"], tablefmt="pipe"))
 
 
 def rounds():
@@ -62,35 +65,50 @@ def rounds():
     round_num = 1
 
     while True:
+        clear_console()
+        print_leaderboard()
 
         if len(act_teams) == 1: #Winner
-            print(*act_teams, " has won!")
-            #TABLE TABLE TABLE TABLE TABLE TABLE TABLE TABLE 
-
+            print("\n", *act_teams, "has won the tournament")
             break #Winner Winner
 
-        if len(act_teams) % 2 == 0:
-            while len(pairs) < len(act_teams) / 2: #Generating pairings
-                team1 = teamrandom()
-                while team1 in seen_teams:
-                    team1 = teamrandom()
-                team2 = teamrandom()
-                while team2 in seen_teams or team2 == team1:
-                    team2 = teamrandom()
-                seen_teams.append(team1) #Add teams to seen_teams so no repeats
-                seen_teams.append(team2)
-                pair = (act_teams[team1], act_teams[team2])
-                pairs.append(pair)
-            round_print()
-            break
-  
-        elif len(act_teams) % 2 == 1:
-            bye = random.sample(teams_list, 1)
-            print(f"{bye} has been chosen as a bye for this round")
-            
-            pass #COMPLETE!!!!! ASSIGN BYE
-        else:
-            print("Error occured, please contact creator")
+        print(f"\nRound {round_num}: ")
+
+        # Work on a copy of act_teams for pairing
+        local_teams = act_teams.copy()
+        global pairs
+        pairs = []
+
+        # Assign bye if there's an odd number of teams
+        bye_team = None
+        if len(local_teams) % 2 == 1:
+            # Eligible teams for bye: active teams without previous bye
+            eligible_byes = [team for team in local_teams if team not in teams_with_byes]
+
+            # If no eligible teams left, allow all active teams (reset byes)
+            if not eligible_byes:
+                eligible_byes = local_teams.copy()
+                teams_with_byes.clear()  # Reset bye history
+
+            bye_team = random.choice(eligible_byes)
+            print(f"{bye_team} has been given a bye for this round and proceeds automatically.")
+            teams_with_byes.add(bye_team)
+            local_teams.remove(bye_team)
+
+        # Shuffle teams to ensure random fair matchups
+        random.shuffle(local_teams)
+
+        # Generate pairings
+        for i in range(0, len(local_teams), 2):
+            team1 = local_teams[i]
+            team2 = local_teams[i + 1]
+            pairs.append((team1, team2))
+
+        round_print()
+
+        # Re-add the bye team to act_teams (if still active)
+        if bye_team and bye_team not in act_teams:
+            act_teams.append(bye_team)
 
         round_num += 1
 
@@ -100,14 +118,12 @@ def round_print():
         print(f"Pair {counter} is {pair[0]} versus {pair[1]}")
         
         while True:
-
             try:
                 team1_score = int(input(f"What did {pair[0]} score? "))
                 team2_score = int(input(f"What did {pair[1]} score? "))
             except:
-                print("Please input scores as intergers.")
-                team1_score = int(input(f"What did {pair[0]} score? "))
-                team2_score = int(input(f"What did {pair[1]} score? "))
+                print("Please input scores as integers.")
+                continue
 
             if team1_score > team2_score:
                 counter +=1
@@ -119,7 +135,9 @@ def round_print():
                 leaderboard[pair[0]]["won"] += 1 #Updating won
                 leaderboard[pair[1]]["lost"] += 1 #Updating lost
 
-                act_teams.remove(pair[1]) #Remove losing team from active teams
+                # Remove loser from active teams
+                if pair[1] in act_teams:
+                    act_teams.remove(pair[1])
                 break
             elif team2_score > team1_score:
                 counter +=1
@@ -130,16 +148,19 @@ def round_print():
 
                 leaderboard[pair[1]]["won"] += 1 #Updating won
                 leaderboard[pair[0]]["lost"] += 1 #Updating lost
-                act_teams.remove(pair[0]) #Remove losing team from active teams
 
+                # Remove loser from active teams
+                if pair[0] in act_teams:
+                    act_teams.remove(pair[0])
                 break
 
             else:
                 print("Draws are not allowed, please re-enter scores")
 
 
-print("Welcome to the knockout Tournament Tracker!")
+if __name__ == "__main__":
+    print("Welcome to the knockout Tournament Tracker!")
 
-teams()
+    teams()
 
-rounds()
+    rounds()
