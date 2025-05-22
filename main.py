@@ -53,52 +53,9 @@ seen_teams = []
 def teamrandom(): #Keeps matches easy easy
     return random.randint(0, len(act_teams) - 1)
 
-def play_count_and_counter(win, lose): #Simplify code
-    leaderboard[act_teams[win]]["won"] += 1 #Updating won
-    leaderboard[act_teams[lose]]["lost"] += 1 #Updating lost
 
-    #Updating played
-    leaderboard[act_teams[win]]["played"] += 1
-    leaderboard[act_teams[lose]]["played"] += 1
 
-def round_print():
-    counter = 1
-    for pair in pairs:
-        print(f"Pair {counter} is {act_teams[pair[0]]} versus {act_teams[pair[1]]}")
-        
 
-        while True:
-
-            try:
-                team1_score = int(input(f"What did {act_teams[pair[0]]} score? "))
-                team2_score = int(input(f"What did {act_teams[pair[1]]} score? "))
-            except:
-                print("Please input scores as intergers.")
-                team1_score = int(input(f"What did {act_teams[pair[0]]} score? "))
-                team2_score = int(input(f"What did {act_teams[pair[1]]} score? "))
-
-            
-
-            if team1_score > team2_score:
-                print(f"{act_teams[pair[0]]} won the round")
-                play_count_and_counter(pair[0], pair[1]) 
-                act_teams.remove(act_teams[pair[1]]) #Remove losing team from active teams
-                counter += 1
-
-                print(leaderboard[act_teams[pair[0]]]["played"])
-                print(leaderboard[act_teams[pair[1]]]["played"])
-                break
-            elif team2_score > team1_score:
-                print(f"{act_teams[pair[1]]} won the round")
-                play_count_and_counter(pair[1], pair[0])
-                act_teams.remove(act_teams[pair[0]]) #Remove losing team from active teams
-                counter += 1
-
-                print(leaderboard[act_teams[pair[0]]]["played"])
-                print(leaderboard[act_teams[pair[1]]]["played"])
-                break
-            else:
-                print("Draws are not allowed, please re-enter scores")
 
 def rounds():
     global round_num
@@ -122,7 +79,7 @@ def rounds():
                     team2 = teamrandom()
                 seen_teams.append(team1) #Add teams to seen_teams so no repeats
                 seen_teams.append(team2)
-                pair = (team1, team2)
+                pair = (act_teams[team1], act_teams[team2])
                 pairs.append(pair)
             round_print()
             break
@@ -136,6 +93,50 @@ def rounds():
             print("Error occured, please contact creator")
 
         round_num += 1
+
+def round_print():
+    counter = 1
+    for pair in pairs:
+        print(f"Pair {counter} is {pair[0]} versus {pair[1]}")
+        
+        while True:
+
+            try:
+                team1_score = int(input(f"What did {pair[0]} score? "))
+                team2_score = int(input(f"What did {pair[1]} score? "))
+            except:
+                print("Please input scores as intergers.")
+                team1_score = int(input(f"What did {pair[0]} score? "))
+                team2_score = int(input(f"What did {pair[1]} score? "))
+
+            if team1_score > team2_score:
+                counter +=1
+                print(f"{pair[0]} won the round")
+
+                #Updating played
+                leaderboard[pair[0]]["played"] += 1 ; leaderboard[pair[1]]["played"] += 1
+
+                leaderboard[pair[0]]["won"] += 1 #Updating won
+                leaderboard[pair[1]]["lost"] += 1 #Updating lost
+
+                act_teams.remove(pair[1]) #Remove losing team from active teams
+                break
+            elif team2_score > team1_score:
+                counter +=1
+                print(f"{pair[1]} won the round")
+
+                #Updating played
+                leaderboard[pair[0]]["played"] += 1 ; leaderboard[pair[1]]["played"] += 1
+
+                leaderboard[pair[1]]["won"] += 1 #Updating won
+                leaderboard[pair[0]]["lost"] += 1 #Updating lost
+                act_teams.remove(pair[0]) #Remove losing team from active teams
+
+                break
+
+            else:
+                print("Draws are not allowed, please re-enter scores")
+
 
 print("Welcome to the knockout Tournament Tracker!")
 
