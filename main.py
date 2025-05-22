@@ -53,6 +53,14 @@ seen_teams = []
 def teamrandom(): #Keeps matches easy easy
     return random.randint(0, len(act_teams) - 1)
 
+def play_count_and_counter(win, lose): #Simplify code
+    leaderboard[act_teams[win]]["won"] += 1 #Updating won
+    leaderboard[act_teams[lose]]["lost"] += 1 #Updating lost
+
+    #Updating played
+    leaderboard[act_teams[win]]["played"] += 1
+    leaderboard[act_teams[lose]]["played"] += 1
+
 def round_print():
     counter = 1
     for pair in pairs:
@@ -69,18 +77,28 @@ def round_print():
                 team1_score = int(input(f"What did {act_teams[pair[0]]} score? "))
                 team2_score = int(input(f"What did {act_teams[pair[1]]} score? "))
 
+            
+
             if team1_score > team2_score:
                 print(f"{act_teams[pair[0]]} won the round")
-                #INPUT REMOVE
+                play_count_and_counter(pair[0], pair[1]) 
+                act_teams.remove(act_teams[pair[1]]) #Remove losing team from active teams
+                counter += 1
+
+                print(leaderboard[act_teams[pair[0]]]["played"])
+                print(leaderboard[act_teams[pair[1]]]["played"])
                 break
             elif team2_score > team1_score:
                 print(f"{act_teams[pair[1]]} won the round")
-                #INPUT REMOVE
+                play_count_and_counter(pair[1], pair[0])
+                act_teams.remove(act_teams[pair[0]]) #Remove losing team from active teams
+                counter += 1
+
+                print(leaderboard[act_teams[pair[0]]]["played"])
+                print(leaderboard[act_teams[pair[1]]]["played"])
                 break
             else:
                 print("Draws are not allowed, please re-enter scores")
-
-        counter +=1
 
 def rounds():
     global round_num
