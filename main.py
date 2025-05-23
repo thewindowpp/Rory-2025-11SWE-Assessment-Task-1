@@ -29,7 +29,7 @@ def teams():
         elif teamname in teams_list:
             print("Please enter unique team names, or type 'done' to finish entering teams")
         elif teamname == "done" and len(teams_list) < 4:
-            print("Please enter atleast 4 teams")
+            print("Please enter at least 4 teams")
         else:
             teams_list.append(teamname)
             
