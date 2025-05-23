@@ -21,15 +21,17 @@ def teams():
     print("Please input at least 4 teams, type 'done' to finish")
     
     while True:
+        lower_teams_list = [team_name.lower() for team_name in teams_list]
+
         teamname = input(f"Enter Team {len(teams_list)+1}: ")
         if teamname.lower() == "done" and len(teams_list) >= 4:
             break
         elif teamname == "" :
             print("Please enter a valid team name, or type 'done' to finish entering teams")
-        elif teamname in teams_list:
+        elif teamname.lower() in lower_teams_list:
             print("Please enter unique team names, or type 'done' to finish entering teams")
         elif teamname == "done" and len(teams_list) < 4:
-            print("Please enter at least 4 teams")
+            print("Please enter atleast 4 teams")
         else:
             teams_list.append(teamname)
             
